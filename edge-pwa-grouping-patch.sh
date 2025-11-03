@@ -3,17 +3,13 @@
 DESKTOP_DIR="${XDG_DATA_HOME}/applications"
 PROFILE_NAME="Default"
 
-# Find all matching .desktop files
+# Find and loopo trough all matching .desktop files
 find "${DESKTOP_DIR}" -type f -name "msedge-*-${PROFILE_NAME}.desktop" | while read -r file; do
     echo "Processing: ${file}"
 
-    # Extract the <id> from the filename
     id=$(basename "${file}" | sed -E "s/msedge-(.*)-${PROFILE_NAME}\.desktop/\1/")
 
-    # Get the value of Icon from the file
-    #icon_value=$(grep '^Icon=' "${file}" | cut -d'=' -f2)
-
-    # Replace StartupWMClass with the correct value (msedge_<id>-Default)
+    # Replace StartupWMClass with the correct value (msedge-_<id>-<profile name>)
     wmclass_value="msedge-_${id}-${PROFILE_NAME}"
     if grep -q '^StartupWMClass=' "${file}"; then
         sed -i "s/^StartupWMClass=.*/StartupWMClass=${wmclass_value}/" "${file}"
@@ -21,10 +17,10 @@ find "${DESKTOP_DIR}" -type f -name "msedge-*-${PROFILE_NAME}.desktop" | while r
         echo "StartupWMClass=${wmclass_value}" >> "${file}"
     fi
 
-    # Append the required lines to the end of the file
+    # Append SingleMainWindow to end of file
+    # This might not be nessesary
     echo "SingleMainWindow=true" >> "${file}"
     echo "X-GNOME-SingleWindow=true" >> "${file}"
-
 
     # Rename the file
     new_name="${DESKTOP_DIR}/com.microsoft.${id}.desktop"
