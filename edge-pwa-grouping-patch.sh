@@ -27,3 +27,8 @@ find "${desktop_dir}" -type f -name "msedge-*-${profile_name}.desktop" | while r
     mv "${file}" "${new_name}"
     echo "Renamed to: ${new_name}"
 done
+
+if [ -d "${HOME}/.gnome" ]; then
+    echo "Renamed all files.  Now deleting deprecated ~/.gnome folder."
+    rm -rf "${HOME}/.gnome" 
+fi
